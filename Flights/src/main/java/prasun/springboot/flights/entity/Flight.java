@@ -6,9 +6,6 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -21,21 +18,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Entity
 @Table(name = "flight")
-public class Flight {
-
-    @Column(name = "id", nullable = false, insertable = false, updatable = false)
-    @GeneratedValue(generator = "idGenerator")
-    @Id
-    private Long id;
+public class Flight extends GenericEntity{
 
     @Basic
     @Column(name = "destination")
@@ -79,18 +73,4 @@ public class Flight {
     @JoinColumn(name = "inv_id")
     private Inventory inventory;
 
-
-    public Flight(String destination, String duration, Date fltDate, String fltNo, Date flightTime, String origin,
-                  Fare fare, FlightInfo flightInfo, Inventory inventory) {
-		super();
-		this.destination = destination;
-		this.duration = duration;
-		this.fltDate = fltDate;
-		this.fltNo = fltNo;
-		this.flightTime = flightTime;
-		this.origin = origin;
-		this.fare = fare;
-		this.flightInfo = flightInfo;
-		this.inventory = inventory;
-	}
 }

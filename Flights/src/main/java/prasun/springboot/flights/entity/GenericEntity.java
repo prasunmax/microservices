@@ -1,31 +1,17 @@
 package prasun.springboot.flights.entity;
 
-import java.io.Serializable;
-import java.util.stream.Stream;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 
-import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.id.IdentifierGenerator;
+import org.hibernate.annotations.GenericGenerator;
 
-public class GenericEntity implements IdentifierGenerator{
-
-	@Override
-	public Serializable generate(SharedSessionContractImplementor session, Object obj) throws HibernateException {
-		String query = String.format("select max(%s) from %s", 
-	            session.getEntityPersister(obj.getClass().getName(), obj)
-	              .getIdentifierPropertyName(),
-	            obj.getClass().getSimpleName());
-	 
-			Stream ids = session.createQuery(query).stream();
-	 
-	        Long max = ids.flatMapToLong(Long::longValue)
-	          .max()
-	          .orElse(0L);
-	 
-	        return (max + 1);
-
-	}
+@GenericGenerator(name = "idGenerator",strategy = "prasun.springboot.flights.entity.util.GenericIdentifier")
+public class GenericEntity {
 	
-	
+    @Column(name = "id", nullable = false, insertable = false, updatable = false)
+    @GeneratedValue(generator = "idGenerator")
+    @Id
+    private Long id;
 
 }
