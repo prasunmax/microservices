@@ -1,0 +1,37 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./Mongo/sampledata.archive.gz:/tmp/sampledata.archive.gz
+    #command: bash -c "mongorestore --username root --password example --gzip --archive=/tmp/sampledata.archive.gz"      
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 9000:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+
+  api:
+    tty: true
+    build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
+      context: ./mflix      
+    depends_on:
+      - mongo
+    ports:
+      - 5000:5000
+    volumes:
+      - /app/target
+      - ./mflix/src:/app/src

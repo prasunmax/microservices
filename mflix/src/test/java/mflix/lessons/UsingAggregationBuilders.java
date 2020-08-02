@@ -1,15 +1,21 @@
 package mflix.lessons;
 
-import com.mongodb.client.AggregateIterable;
-import com.mongodb.client.model.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.BsonField;
+import com.mongodb.client.model.Facet;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 
 /**
  * @see com.mongodb.client.model.Facet
