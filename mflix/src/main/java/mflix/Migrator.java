@@ -126,7 +126,7 @@ public class Migrator {
             }
         }
 
-        // TODO> Ticket: Migration - create a query filter that finds
+        // Ticket: Migration - create a query filter that finds
         // documents where `imdb.rating` is of type string
         Bson ratingStringFilter = and( exists("imdb.rating"), type("imdb.rating", "string") );
         for (Document doc : movies.find(ratingStringFilter)) {
@@ -138,7 +138,7 @@ public class Migrator {
         }
 
         // execute the bulk update
-        // TODO> Ticket: Migration - set the bulkWrite options
+        // Ticket: Migration - set the bulkWrite options
         BulkWriteOptions bulkWriteOptions = new BulkWriteOptions().ordered(false);
         if (bulkWrites.isEmpty()) {
             System.out.println("Nothing to update!");

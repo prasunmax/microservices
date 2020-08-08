@@ -8,10 +8,15 @@
 - Adding users
 -- login to the mongo docker 
 	use the command mongo -u <rootuser> -p <rootpassword>
-	paster the sample command
+	paste the sample command
+	
+	
+	--------------------------------------------------------------------
+	use admin;
 db.createUser(
-{	_id: "admin.mflixAppUser",
+{	
 	user: "mflixAppUser",
 	pwd: "mflixAppPwd",
-	db: 'admin',
-	roles:[{role: "readWrite" , db:"sample_mflix"}]})
+	roles:[{role: "readWrite" , db:"assignment"}]})
+	
+	--------------------------------------------------------------------

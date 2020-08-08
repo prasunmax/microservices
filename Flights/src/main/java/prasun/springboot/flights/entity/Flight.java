@@ -20,17 +20,16 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "flight")
 public class Flight extends GenericEntity{
 
+	
     @Basic
     @Column(name = "destination")
     private String destination;
@@ -59,18 +58,19 @@ public class Flight extends GenericEntity{
     private String origin;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fare_id")
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "id")
     private Fare fare;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "flight_infoid")
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "id")
     private FlightInfo flightInfo;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "inv_id")
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = "id")
     private Inventory inventory;
+    
 
 }

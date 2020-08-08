@@ -35,3 +35,15 @@ services:
     volumes:
       - /app/target
       - ./mflix/src:/app/src
+  flight:
+    tty: true
+    build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
+      context: ./Flights      
+    depends_on:
+      - mongo
+    ports:
+      - 8000:8000
+    volumes:
+      - /app/target
+      - ./Flights/src:/app/src
+      
