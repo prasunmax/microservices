@@ -14,6 +14,7 @@ import javax.persistence.TemporalType;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -42,6 +43,7 @@ public class Flight extends GenericEntity{
     @Column(name = "flight_date")
     @Temporal(TemporalType.DATE)
     @DateTimeFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="dd/MM/yyyy")
     private Date fltDate;
 
     @Basic
@@ -51,6 +53,7 @@ public class Flight extends GenericEntity{
     @Basic
     @Column(name = "flight_time")
     @Temporal(TemporalType.TIME)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern ="HH:mm")
     private Date flightTime;
 
     @Basic
@@ -59,17 +62,17 @@ public class Flight extends GenericEntity{
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "fare_id")
     private Fare fare;
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "flight_info_id")
     private FlightInfo flightInfo;
 
     @JsonIgnore
     @OneToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "inventory_id")
     private Inventory inventory;
     
 

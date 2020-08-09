@@ -7,4 +7,4 @@ COPY ./mvnw ./mvnw
 RUN ./mvnw dependency:go-offline
 
 COPY src/ src/
-#CMD ["./mvnw", "spring-boot:run","-Dmaven.test.skip=true"]
+CMD ["./mvnw", "spring-boot:run","-Dmaven.test.skip=true"]

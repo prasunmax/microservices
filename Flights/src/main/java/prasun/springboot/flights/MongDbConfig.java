@@ -51,8 +51,8 @@ public class MongDbConfig extends AbstractMongoClientConfiguration{
 	public LocalContainerEntityManagerFactoryBean mongoEntityManager() throws Throwable {
 
 		Map<String, Object> properties = new HashMap<String, Object>();
-		//properties.put("javax.persistence.transactionType", "JTA");
-		properties.put("javax.persistence.transactionType", "resource_local");
+		properties.put("javax.persistence.transactionType", "JTA");
+		//properties.put("javax.persistence.transactionType", "resource_local");
 		properties.put("hibernate.ogm.datastore.provider", provider);
 		properties.put("hibernate.ogm.datastore.host", host);
 		properties.put("hibernate.ogm.datastore.port", port);

@@ -5,11 +5,11 @@ import java.util.stream.Stream;
 
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SharedSessionContractImplementor;
-import org.hibernate.id.IdentifierGenerator;
+import org.hibernate.ogm.id.impl.OgmIdentityGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GenericIdentifier implements IdentifierGenerator {
+public class GenericIdentifier extends OgmIdentityGenerator {
 
 	private static final Logger log = LoggerFactory.getLogger(GenericIdentifier.class);
 

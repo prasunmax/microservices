@@ -71,15 +71,11 @@ public class UserCommandLineRunner implements CommandLineRunner {
         String indigoFltStr = "6E%";
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        int month = cal.get(Calendar.MONTH) + 1;
-        List<Flight> flts = flightService.findByFltDateAndFltNoLike(month, indigoFltStr);
-        for (Flight flt : flts) {
-            log.info(flt.toString());
-        }
+       
         log.info("-------------------------------");
         log.info("1. Retrieve all Indigo flight trips on August 21st 2020, based on flights starting with 6E");
         log.info("-------------------------------");
-        flts = flightService.findByFltDateAndFltNoLike(date, indigoFltStr);
+        List<Flight> flts = flightService.findByFltDateAndFltNoLike(date, indigoFltStr);
         for (Flight flt : flts) {
             log.info(flt.toString());
         }

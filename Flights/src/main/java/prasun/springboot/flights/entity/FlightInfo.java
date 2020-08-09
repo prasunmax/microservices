@@ -40,8 +40,8 @@ public class FlightInfo extends GenericEntity{
 	@JsonIgnore
 	@ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
 	@JoinTable(name = "flights_info", joinColumns = {
-			@JoinColumn(referencedColumnName = "id") }, inverseJoinColumns = {
-					@JoinColumn(name = "id") })
+			@JoinColumn(referencedColumnName = "_id") }, inverseJoinColumns = {
+					@JoinColumn(name = "airline_id") })
 	private AirlineInfo airlineInfo;
 
 	public FlightInfo(String fltNo, String fltTyp, Integer noOfSeats) {
