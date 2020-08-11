@@ -1,4 +1,4 @@
-package prasun.springboot.flights.repository;
+package prasun.springboot.airline.repository;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import prasun.springboot.flights.entity.AirlineInfo;
+import prasun.springboot.airline.entity.AirlineInfo;
 
 @Repository
 public class AirlineInfoSearchRepository {

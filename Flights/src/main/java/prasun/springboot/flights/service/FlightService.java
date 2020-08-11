@@ -4,16 +4,22 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import javax.persistence.NoResultException;
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import prasun.springboot.flights.VO.AirlineVO;
 import prasun.springboot.flights.VO.FlightSaveVO;
 import prasun.springboot.flights.VO.FlightsModelVO;
 import prasun.springboot.flights.VO.SearchFlightVO;
@@ -29,23 +35,25 @@ import prasun.springboot.flights.repository.FlightSearchRepository;
 public class FlightService {
 	private static final Logger log = LoggerFactory.getLogger(FlightService.class);
 	private FlightRepository repo;
-	private AirlineInfoService airlineInfoService;
 	private InventoryService inventoryService;
 	private FareService fareService;
 	private FlightInfoService flightInfoService;
 	private FlightSearchRepository flightSearchRepository;
+    private RestTemplate template;
+    private SenderService sender;
 
 	@Autowired
-	public FlightService(FlightRepository repo, AirlineInfoService airlineInfoService,
-			InventoryService inventoryService, FareService fareService, FlightInfoService flightInfoService,
+	public FlightService(FlightRepository repo, InventoryService inventoryService, FareService fareService, 
+			FlightInfoService flightInfoService,RestTemplate template, SenderService sender,
 			FlightSearchRepository flightSearchRepository) {
 		super();
 		this.repo = repo;
-		this.airlineInfoService = airlineInfoService;
 		this.inventoryService = inventoryService;
 		this.fareService = fareService;
 		this.flightInfoService = flightInfoService;
 		this.flightSearchRepository = flightSearchRepository;
+		this.template = template;
+		this.sender = sender;
 	}
 
 	public List<Flight> findAll() {
@@ -124,15 +132,19 @@ public class FlightService {
 		try {
 
 			// Get the Airline id for an Airline Name
-			AirlineInfo airlineInfo;
-			try {
-				airlineInfo = airlineInfoService.findByAirlineName(airlineName.toUpperCase());
-			} catch (NoResultException e) {
-				throw new RuntimeException("Airline not present please try again.");
-			}
+			//airlineInfo = airlineInfoService.findByAirlineName(airlineName.toUpperCase());
+			AirlineVO airlineVo = new AirlineVO();
+			airlineVo.setAirlineName(airlineName);
+		    HttpEntity<Object> req = 
+		    	      new HttpEntity<Object>(airlineVo);
+			ResponseEntity<AirlineInfo>	airlineInfo = template.exchange("http://airline-service/rest/getAirlineByName",HttpMethod.POST, req, AirlineInfo.class);
+			//Send a message
+			Map<String, String> map = new HashedMap<>();
+			map.put("airline", airlineVo.getAirlineName());
+			sender.send(map);
 			// Save FlightInfo
 			FlightInfo fltInfo = flightInfoService.save(fltNo.toUpperCase(), fltTyp.toUpperCase(), invCount,
-					airlineInfo);
+					airlineInfo.getBody());
 			// Check if the flight is already in that day
 			Flight flt = findByFltDateAndFltNo(fltDate, fltNo);
 			if(null!= flt) {

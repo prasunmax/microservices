@@ -1,4 +1,4 @@
-package prasun.springboot.flights.service;
+package prasun.springboot.airline.service;
 
 import java.util.List;
 
@@ -7,9 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import prasun.springboot.flights.entity.AirlineInfo;
-import prasun.springboot.flights.repository.AirlineInfoRepository;
-import prasun.springboot.flights.repository.AirlineInfoSearchRepository;
+import prasun.springboot.airline.entity.AirlineInfo;
+import prasun.springboot.airline.repository.AirlineInfoRepository;
+import prasun.springboot.airline.repository.AirlineInfoSearchRepository;
 
 @Service
 public class AirlineInfoService {

@@ -16,9 +16,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import prasun.springboot.flights.entity.AirlineInfo;
 import prasun.springboot.flights.entity.Flight;
-import prasun.springboot.flights.service.AirlineInfoService;
 import prasun.springboot.flights.service.FlightService;
 
 @Component
@@ -27,8 +25,6 @@ public class UserCommandLineRunner implements CommandLineRunner {
     private static final Logger log = LoggerFactory
             .getLogger(UserCommandLineRunner.class);
 
-    @Autowired
-    private AirlineInfoService airlineService;
 
     @Autowired
     private FlightService flightService;
@@ -53,13 +49,6 @@ public class UserCommandLineRunner implements CommandLineRunner {
     	
     }
     public void assignmentRun() throws ParseException {
-
-        log.info("-------------------------------");
-        log.info("0.1: Finding all Airlines, this is for testing only");
-        log.info("-------------------------------");
-        for (AirlineInfo info : airlineService.findAll()) {
-            log.info(info.toString());
-        }
 
         log.info("-------------------------------");
         log.info("0.2: Retrieve all Indigo flight trips of August month, was present in the first assignment");

@@ -20,3 +20,21 @@ db.createUser(
 	roles:[{role: "readWrite" , db:"assignment"}]})
 	
 	--------------------------------------------------------------------
+	
+- Add Jib support for dockerising : https://www.baeldung.com/jib-dockerizing
+- Put in layered approach for final docker imaging   
+- JPA using OGM for flights search feature
+- Normal mongo implementation for Booking engine
+- User management, authentication and authorisation using jwt in a seaprate container
+- Eureka registry for user authentication
+- nginx for request routing  
+- mvn test -Dtest=PagingTest
+
+from Siva Prasad Reddy B to All Participants:
+are we going to use Jenkins here
+from Super User 042 to All Participants:
+https://console.lambda.store/login
+from Siva Prasad Reddy B to All Participants:
+ok
+from Super User 042 to All Participants:
+https://www.cloudamqp.com/
