@@ -1,0 +1,49 @@
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http://registry:8000/eureka/}
+spring:
+  application:
+    name: GATEWAY-SERVICE
+  cloud:
+    gateway:
+      routes:
+        - id: airline-service
+          uri: lb://AIRLINE-SERVICE
+          predicates:
+            - Path=/airline/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: airline-service
+                fallbackuri: forward:/airlineFallback
+        - id: flight-service
+          uri: lb://FLIGHT-SERVICE
+          predicates:
+            - Path=/flight/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: airline-service
+                fallbackuri: forward:/flightFallback
+    
+server:
+  port: 8000
+  
+hystrix:
+  command:
+    fallback:
+      isolation:
+        thread:
+          timeoutInMilliseconds: 5000   
+          
+management:
+  security:
+    enabled: false 
+  endpoints:
+    web:
+      exposure:
+        include: hystrix.stream
+      base-path: /

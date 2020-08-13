@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import prasun.springboot.airline.VO.AirlineVO;
@@ -18,6 +19,7 @@ import prasun.springboot.airline.entity.AirlineInfo;
 import prasun.springboot.airline.service.AirlineInfoService;
 
 @RestController
+@RequestMapping("/airline")
 public class AirlineInfoController {
 
 	private AirlineInfoService service;
@@ -28,23 +30,24 @@ public class AirlineInfoController {
 		this.service = service;
 	}
 
-	@GetMapping("/rest/getAllAirlines")
+	@GetMapping("/getAllAirlines")
 	public List<AirlineInfo> getAirlines() {
 		return service.findAll();
 	}
-	@GetMapping("/rest/getAirlineByName")
+	
+	@GetMapping("/getAirlineByName")
 	public ResponseEntity<?> getAirlineByName(@Valid @RequestBody AirlineVO airline,BindingResult result) {
 		AirlineInfo info =  service.findByAirlineName(airline.getAirlineName());
 		return ResponseEntity.ok(info);
 	}
 
-	@PostMapping("/rest/getAirlineByName")
+	@PostMapping("/getAirlineByName")
 	public ResponseEntity<?> getAirlineByNameForPost(@Valid @RequestBody AirlineVO airline,BindingResult result) {
 		AirlineInfo info =  service.findByAirlineName(airline.getAirlineName());
 		return ResponseEntity.ok(info);
 	}
 	
-	@PostMapping("/rest/saveAirline")
+	@PostMapping("/saveAirline")
 	public ResponseEntity<?> saveAirline(@Valid @RequestBody AirlineVO airlineName) {
 		AirlineInfo airlineInfo = new AirlineInfo(airlineName.getLogo(),airlineName.getAirlineName());		
 		try {

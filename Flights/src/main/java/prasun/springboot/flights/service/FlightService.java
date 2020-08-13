@@ -137,12 +137,13 @@ public class FlightService {
 			airlineVo.setAirlineName(airlineName);
 		    HttpEntity<Object> req = 
 		    	      new HttpEntity<Object>(airlineVo);
-			ResponseEntity<AirlineInfo>	airlineInfo = template.exchange("http://airline-service/rest/getAirlineByName",HttpMethod.POST, req, AirlineInfo.class);
+			ResponseEntity<AirlineInfo>	airlineInfo = template.exchange("http://airline-service/airline/getAirlineByName",HttpMethod.POST, req, AirlineInfo.class);
 			//Send a message
 			Map<String, String> map = new HashedMap<>();
 			map.put("airline", airlineVo.getAirlineName());
 			sender.send(map);
-			// Save FlightInfo
+			// Save FlightInfo if not already exists
+			//TODO fix this
 			FlightInfo fltInfo = flightInfoService.save(fltNo.toUpperCase(), fltTyp.toUpperCase(), invCount,
 					airlineInfo.getBody());
 			// Check if the flight is already in that day

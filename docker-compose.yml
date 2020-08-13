@@ -50,7 +50,6 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - /app/target
       - ./Flights/src:/app/src
   airline:
     tty: true
@@ -62,7 +61,6 @@ services:
     ports:
       - 8001:8000
     volumes:
-      - /app/target
       - ./Airline/src:/app/src
   registry:
     tty: true
@@ -76,6 +74,35 @@ services:
     volumes:
       - /app/target
       - ./ServiceRegistry/src:/app/src
+  gateway:
+    tty: true
+    build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
+      context: ./gateway
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - mongo
+    ports:
+      - 8003:8000
+    volumes:
+      - ./gateway/src:/app/src
+  admin:
+    tty: true
+    build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
+      context: ./admin 
+      dockerfile: Dockerfile.dev     
+    ports:
+      - 8004:8000
+    volumes:
+      - ./admin/src:/app/src
+  hystrix:
+    tty: true
+    build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
+      context: ./hystrix-dashboard 
+      dockerfile: Dockerfile.dev     
+    ports:
+      - 8005:8000
+    volumes:
+      - ./hystrix-dashboard/src:/app/src
   rabbitmq:
     image: rabbitmq:3-management-alpine
     container_name: rabbitmq

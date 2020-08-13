@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +23,7 @@ import prasun.springboot.flights.entity.Flight;
 import prasun.springboot.flights.service.FlightService;
 
 @RestController
+@RequestMapping("/flight")
 public class FlightController {
 	private static final Logger log = LoggerFactory.getLogger(FlightController.class);
 
@@ -33,14 +35,14 @@ public class FlightController {
 		this.flightService = flightService;
 	}
 
-	@GetMapping(path = "/rest/flight/sample")
+	@GetMapping(path = "/sample")
 	public SearchFlightVO getMapping() {
 		SearchFlightVO flightData = new SearchFlightVO();
 
 		return flightData;
 	}
 
-	@PostMapping(path = "/rest/flight")
+	@PostMapping(path = "/saveflight")
 	public ResponseEntity<?> restMain(@RequestBody FlightSaveVO flightData, BindingResult result) throws ParseException {
 		if(result.hasErrors()) {
 			ResponseEntity.unprocessableEntity().body(flightData);
@@ -49,7 +51,7 @@ public class FlightController {
 		return ResponseEntity.ok().body(flt);
 	}
 
-	@GetMapping(path = "/rest/flight")
+	@GetMapping(path = "/getflight")
 	public ResponseEntity<?> restMain(@RequestBody Optional<SearchFlightVO> flightData, @RequestParam Optional<String> origin,
 			@RequestParam Optional<String> destination, @RequestParam Optional<String> fltDate,
 			@RequestParam Optional<String> fltNum, @RequestParam Optional<Integer> seat) {
