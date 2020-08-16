@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(basePackages = {
 		"prasun.springboot.flights" }, entityManagerFactoryRef = "mongoEntityManager", transactionManagerRef = "mongoTransactionManager")
 @EnableTransactionManagement
-public class MongDbConfig extends AbstractMongoClientConfiguration{
+public class MongoDbConfig extends AbstractMongoClientConfiguration{
 
 	@Value("${hibernate.ogm.datastore.provider}")
 	private String provider;
