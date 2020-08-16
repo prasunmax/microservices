@@ -21,5 +21,6 @@ public class Inventory extends GenericEntity{
 	@Basic
 	@Column(name = "count")
 	private int count;
+	
 
 }

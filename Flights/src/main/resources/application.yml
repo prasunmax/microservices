@@ -1,19 +1,19 @@
 eureka:
   client:
-    register-with-eureka: true
-    fetch-registry: true
+    register-with-eureka: false
+    fetch-registry: false
     service-url:
-      defaultZone: ${EUREKA_SERVER:http://registry:8000/eureka/}      
+      defaultZone: ${EUREKA_SERVER:http://picklu:8002/eureka/}      
 
 spring:
-  boot:
-    admin:
-      client:
-        url: http://admin:8000
-        username: admin
-        password: admin
+  profiles: development
   application:
     name: FLIGHT-SERVICE
+    admin:
+      client:
+        url: http://picklu:8004
+        username: admin
+        password: admin
   rabbitmq:
-    addresses: amqp://rabbitmq
+    addresses: amqp://picklu
   

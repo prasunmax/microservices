@@ -17,6 +17,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.ogm.OgmSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -27,7 +30,7 @@ import prasun.springboot.flights.entity.Inventory;
 
 @Repository
 public class FlightSearchRepository {
-
+	private static final Logger log = LoggerFactory.getLogger(FlightSearchRepository.class);
 	private EntityManagerFactory entityManagerFactory;
 
 	@Autowired
@@ -176,6 +179,124 @@ public class FlightSearchRepository {
 	}
 
 	public FlightsModelVO getFlightsBasedOnInputParameters(Optional<String> origin, Optional<String> destination,
+			Optional<String> fltNum, Optional<String> fltDate, Optional<Integer> seat) {
+
+		String query = "";
+		FlightsModelVO flights = new FlightsModelVO();
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		OgmSession ogmSession = entityManager.unwrap(OgmSession.class);
+		
+		//Session session = entityManager.openSession();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = null;
+		//query = "select f from Flight f inner join Inventory inv on f.inventory.id=inv.id where 1=1 ";
+		//query = "select f from Flight f inner join f.inventory inv where 1=:value ";
+		List<String> predicates = new ArrayList<String>();
+		
+		query = "db.flight.aggregate([{ '$lookup': {" + 
+				"  'from': 'inventory'," + 
+				"  'localField': 'inventory_id'," + 
+				"  'foreignField': '_id'," + 
+				"  as: 'inv'" + 
+				"} }, { '$unwind': {" + 
+				"  'path': '$inv'" + 
+				"} }, { '$match': {" + 
+				"  'inv.count': { '$gte' :"+seat.get()+" }"; 
+//		query = "db.Flight.aggregate([{'$match': {" ;
+		if (origin.isPresent()) {
+			predicates.add("'origin': '"+ origin.get() +"'");
+		}
+		if (destination.isPresent()) {
+			predicates.add(" 'destination':'"+destination.get()+"'");
+		}
+		if (fltNum.isPresent()) {
+			predicates.add(" 'flight_number':'"+fltNum.get()+"'");
+		}
+		if (fltDate.isPresent()) {
+			try {
+				date = sdf.parse(fltDate.get());
+			} catch (ParseException e) {
+				return flights;
+			}
+			predicates.add(" 'flight_date':'"+date+"'");
+		}
+		
+		for(String predicate: predicates) {
+			query+=" , " + predicate;
+		}
+		query += " }}])";
+		//query = "{ '$and':[ {'origin': 'KOLKATA' } ,{'flight_number':'AI-100'} ]} " ;
+		//query = "{ '$and':[ {'origin': 'KOLKATA' } ,{'flight_number':'AI-100'} ]}" ;
+		log.info("Query formed is:"+query);
+		@SuppressWarnings("unchecked")
+		List<Flight> flts = ogmSession.createNativeQuery(query ).addEntity(Flight.class).list();
+		
+		flights.setFlightList(flts);
+		
+		//FindIterable<Document> result = collection.aggregate(Arrays.asList(lookup("inventory", "inventory_id", "_id", "inventory"), unwind("$inventory"), match(and(gte("inventory.count", 3L), eq("origin", "KOLKATA")))));
+		return flights;
+	}
+	
+	public FlightsModelVO getFlightsBasedOnInputParameters(Optional<String> origin, Optional<String> destination,
+			Optional<String> fltNum, Optional<String> fltDate) {
+		String query = "";
+		FlightsModelVO flights = new FlightsModelVO();
+		EntityManager entityManager = entityManagerFactory.createEntityManager();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = null;
+		//query = "select f from Flight f inner join Inventory inv on f.inventory.id=inv.id where 1=1 ";
+		//query = "select f from Flight f inner join f.inventory inv where 1=:value ";
+		query = "select f from Flight f where  ";
+		List<String> predicates = new ArrayList<String>();
+		
+		if (origin.isPresent()) {
+			predicates.add("  f.origin = :origin");
+		}
+		if (destination.isPresent()) {
+			predicates.add("  f.destination = :destination");
+		}
+		if (fltNum.isPresent()) {
+			predicates.add("  f.fltNo = :fltNum");
+		}
+		if (fltDate.isPresent()) {
+			try {
+				date = sdf.parse(fltDate.get());
+			} catch (ParseException e) {
+				return flights;
+			}
+			predicates.add("  f.fltDate = :date");
+		}
+		boolean first = true;
+		for(String predicate: predicates) {
+			if(first) {
+				query+=predicate;
+				first = false;
+			}else {
+				query+=" and " + predicate;
+			}
+		}
+		log.info("Query formed is:"+query);
+		TypedQuery<Flight> finalQuery = entityManager.createQuery(query, Flight.class);
+		
+		//finalQuery.setParameter("value", 1);//1=1 triggers a bug in hql parser (https://hibernate.atlassian.net/browse/HQLPARSER-44): NPE in SingleEntityQueryRendererDelegate.addComparisonPredicate due to null property 
+
+		if (origin.isPresent()) {
+			finalQuery.setParameter("origin", origin.get());
+		}
+		if (destination.isPresent()) {
+			finalQuery.setParameter("destination", destination.get());
+		}
+		if (fltNum.isPresent()) {
+			finalQuery.setParameter("fltNum", fltNum.get());
+		}
+		if (fltDate.isPresent()) {
+			finalQuery.setParameter("date", date);
+		}
+		flights.setFlightList(finalQuery.getResultList());
+		return flights;
+	}
+
+	public FlightsModelVO getFlightsBasedOnInputParametersbackup(Optional<String> origin, Optional<String> destination,
 			Optional<String> fltNum, Optional<String> fltDate, Optional<Integer> seat) {
 		FlightsModelVO flights = new FlightsModelVO();
 		CriteriaBuilder cb = entityManagerFactory.getCriteriaBuilder();

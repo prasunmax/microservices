@@ -1,17 +1,3 @@
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: ${EUREKA_SERVER:http://registry:8000/eureka/}
 spring:
-  boot:
-    admin:
-      client:
-        url: http://admin:8000
-        username: admin
-        password: admin
   application:
     name: AIRLINE-SERVICE
-  rabbitmq:
-    addresses: amqp://rabbitmq

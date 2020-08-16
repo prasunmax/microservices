@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: CONFIG-SERVER
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/prasunmax/cloud-config-server
+    admin:
+      client:
+        url: http://admin:8000
+        username: admin
+        password: admin
+
+server:
+  port: 8000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

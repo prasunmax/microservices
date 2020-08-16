@@ -46,7 +46,7 @@ public class FlightController {
 	public ResponseEntity<?> restMain(@RequestBody FlightSaveVO flightData, BindingResult result) throws ParseException {
 		if(result.hasErrors()) {
 			ResponseEntity.unprocessableEntity().body(flightData);
-		}
+		}  
 		Flight flt = flightService.saveFlight(flightData);
 		return ResponseEntity.ok().body(flt);
 	}

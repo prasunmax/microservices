@@ -13,6 +13,8 @@ import org.apache.commons.collections4.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,7 @@ import prasun.springboot.flights.repository.FlightRepository;
 import prasun.springboot.flights.repository.FlightSearchRepository;
 
 @Service
+@RefreshScope
 public class FlightService {
 	private static final Logger log = LoggerFactory.getLogger(FlightService.class);
 	private FlightRepository repo;
@@ -41,6 +44,10 @@ public class FlightService {
 	private FlightSearchRepository flightSearchRepository;
     private RestTemplate template;
     private SenderService sender;
+    
+    //private"http://airline-service/airline/getAirlineByName"
+    @Value("microservices.endpoints.endpoint.airline.getAirlineByName")
+    private String AIRLINE_URL;
 
 	@Autowired
 	public FlightService(FlightRepository repo, InventoryService inventoryService, FareService fareService, 
@@ -180,8 +187,10 @@ public class FlightService {
 
 	public FlightsModelVO getFlightsBasedOnInputParameters(Optional<String> origin, Optional<String> destination,
 			Optional<String> fltNum, Optional<String> fltDate, Optional<Integer> seat) {
-
-		return flightSearchRepository.getFlightsBasedOnInputParameters(origin, destination, fltNum, fltDate, seat);
+		if(seat.isPresent())
+			return flightSearchRepository.getFlightsBasedOnInputParameters(origin, destination, fltNum, fltDate, seat);
+		else
+			return flightSearchRepository.getFlightsBasedOnInputParameters(origin, destination, fltNum, fltDate);
 	}
 
 	public Flight saveFlight(FlightSaveVO flightData) throws ParseException {

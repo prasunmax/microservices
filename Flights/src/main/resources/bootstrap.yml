@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    config:
+      uri: http://config-server:8000
+  application:
+    name: flight-service
+management:
+  health:
+    mongo:
+      enabled: false

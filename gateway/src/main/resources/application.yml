@@ -37,7 +37,7 @@ hystrix:
     fallback:
       isolation:
         thread:
-          timeoutInMilliseconds: 5000   
+          timeoutInMilliseconds: 30000
           
 management:
   security:
@@ -46,4 +46,3 @@ management:
     web:
       exposure:
         include: hystrix.stream
-      base-path: /
