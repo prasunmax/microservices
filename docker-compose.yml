@@ -7,7 +7,7 @@ services:
   
   mongo:
     image: mongo
-    restart: always
+    #restart: always
     ports:
       - 27017:27017
     volumes:
@@ -18,7 +18,6 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-      RABBITMQ_ERLANG_COOKIE: secret_cookie
   
   mongo-express:
     image: mongo-express
@@ -28,7 +27,6 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
-
   api:
     tty: true
     build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
@@ -40,35 +38,23 @@ services:
     volumes:
       - /app/target
       - ./mflix/src:/app/src
-  flight:
+  config-server:
     tty: true
     build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
-      context: ./Flights 
-      dockerfile: Dockerfile.dev     
-    depends_on:
-      - mongo
-    ports:
-      - 8000:8000
-    volumes:
-      - ./Flights/src:/app/src
-  airline:
-    tty: true
-    build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
-      context: ./Airline
+      context: ./configServer
       dockerfile: Dockerfile.dev
-    depends_on:
-      - mongo
-    ports:
-      - 8001:8000
+    ports:               #Not exposing the port to outside world
+      - 8012:8000
     volumes:
-      - ./Airline/src:/app/src
+      - /app/target
+      - ./configServer/src:/app/src
   registry:
     tty: true
     build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
       context: ./ServiceRegistry
       dockerfile: Dockerfile.dev
     depends_on:
-      - mongo
+      - config-server
     ports:
       - 8002:8000
     volumes:
@@ -80,20 +66,47 @@ services:
       context: ./gateway
       dockerfile: Dockerfile.dev
     depends_on:
-      - mongo
+      - config-server
     ports:
       - 8003:8000
     volumes:
       - ./gateway/src:/app/src
-  admin:
+  airline:
     tty: true
     build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
-      context: ./admin 
-      dockerfile: Dockerfile.dev     
+      context: ./Airline
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - mongo
+      - config-server
     ports:
-      - 8004:8000
+      - 8001:8000
     volumes:
-      - ./admin/src:/app/src
+      - ./Airline/src:/app/src
+  product-catalog:
+    tty: true
+    build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
+      context: ./Product-Catalog-Service
+      dockerfile: Dockerfile.dev
+    depends_on:
+      - mongo
+      - config-server
+    ports:
+      - 7001:8000
+    volumes:
+      - ./Product-Catalog-Service/src:/app/src
+  flight:
+    tty: true
+    build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
+      context: ./Flights 
+      dockerfile: Dockerfile.dev     
+    depends_on:
+      - mongo
+      - config-server
+    ports:
+      - 8000:8000
+    volumes:
+      - ./Flights/src:/app/src
   hystrix:
     tty: true
     build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
@@ -101,6 +114,8 @@ services:
       dockerfile: Dockerfile.dev     
     ports:
       - 8005:8000
+    depends_on:
+      - config-server
     volumes:
       - ./hystrix-dashboard/src:/app/src
   rabbitmq:
@@ -117,3 +132,12 @@ services:
         - 4369:4369
         - 15671:15671
         - 15672:15672
+  admin:
+    tty: true
+    build:                #Add to adjust the error: Service api has neither an image nor a build context specified. At least one must be provided.
+      context: ./admin 
+      dockerfile: Dockerfile.dev     
+    ports:
+      - 8004:8000
+    volumes:
+      - ./admin/src:/app/src
